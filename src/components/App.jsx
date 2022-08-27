@@ -19,15 +19,14 @@ export class App extends Component {
     modalPhoto: '',
   };
 
-  onSearchBarSubmit = async e => {
+  onSearchBarSubmit = async (e, query) => {
     e.preventDefault();
     await this.setState({ loading: true });
-    await this.setState({ query: e.target.elements.input.value, page: 1 });
+    await this.setState({ query, page: 1 });
 
     try {
-      const response = await axios.get(
-        `&q=${this.state.query}&page=${this.state.page}`,
-      );
+      const { query, page } = this.state;
+      const response = await axios.get(`&q=${query}&page=${page}`);
       this.setState({ images: response.data.hits });
     } catch (error) {
       console.log(error);
@@ -42,9 +41,8 @@ export class App extends Component {
       return { page: prevState.page + 1 };
     });
     try {
-      const response = await axios.get(
-        `&q=${this.state.query}&page=${this.state.page}`,
-      );
+      const { query, page } = this.state;
+      const response = await axios.get(`&q=${query}&page=${page}`);
       await this.setState(prevState => {
         return { images: [...prevState.images, ...response.data.hits] };
       });
@@ -57,6 +55,27 @@ export class App extends Component {
 
   onOpenModal = imgURL => {
     this.setState({ modal: true, modalPhoto: imgURL });
+    window.addEventListener('keydown', this.onEscape);
+    window.addEventListener('click', this.onOverLayClick);
+  };
+
+  onCloseModal = () => {
+    const { onEscape, onOverLayClick } = this;
+    this.setState({ modal: false });
+    window.removeEventListener('keydown', onEscape);
+    window.removeEventListener('keydown', onOverLayClick);
+  };
+
+  onEscape = event => {
+    if (event.key === 'Escape') {
+      this.onCloseModal();
+    }
+  };
+  onOverLayClick = event => {
+    const overlay = document.getElementById('overlay');
+    if (event.target === overlay) {
+      this.onCloseModal();
+    }
   };
 
   render() {

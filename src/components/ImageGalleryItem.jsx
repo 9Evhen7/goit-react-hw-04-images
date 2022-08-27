@@ -1,10 +1,11 @@
 import { GallaryItem } from 'styles/styleImageGallaryItem';
+import { Image } from 'styles/styselGallaryImage';
 
 export const ImageGalleryItem = ({ images, onOpenModal }) => {
   return images.map(image => {
     return (
       <GallaryItem key={image.id}>
-        <img
+        <Image
           src={image.webformatURL}
           alt="parsed pic"
           onClick={() => {

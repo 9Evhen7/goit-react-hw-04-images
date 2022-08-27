@@ -9,7 +9,7 @@ import { BiSearchAlt } from 'react-icons/bi';
 export const Searchbar = ({ onSubmit }) => {
   return (
     <SearchbarHeader>
-      <SearchbarForm onSubmit={e => onSubmit(e)}>
+      <SearchbarForm onSubmit={e => onSubmit(e, e.target.elements.input.value)}>
         <FormBtn type="submit">
           <BiSearchAlt size={28} />
         </FormBtn>
