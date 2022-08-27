@@ -9,7 +9,7 @@ export const Loader = () => {
       color="#919191"
       ariaLabel="watch-loading"
       wrapperStyle={{}}
-      wrapperClassName=""
+      wrapperClassName="watch"
       visible={true}
     />
   );
