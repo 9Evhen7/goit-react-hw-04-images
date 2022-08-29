@@ -19,63 +19,53 @@ export class App extends Component {
     modalPhoto: '',
   };
 
-  onSearchBarSubmit = async (e, query) => {
-    e.preventDefault();
-    await this.setState({ loading: true });
-    await this.setState({ query, page: 1 });
+  async componentDidUpdate(prevProps, prevState) {
+    const { query, page } = this.state;
 
-    try {
-      const { query, page } = this.state;
+    if (query !== prevState.query || page !== prevState.page) {
       const response = await axios.get(`&q=${query}&page=${page}`);
-      this.setState({ images: response.data.hits });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.setState({ loading: false });
+      try {
+        const arrayOfImages = response.data.hits.map(
+          ({ id, webformatURL, largeImageURL }) => {
+            const imgObj = {
+              id,
+              webformatURL,
+              largeImageURL,
+            };
+            return imgObj;
+          },
+        );
+
+        if (page !== 1) {
+          this.setState({ images: [...prevState.images, ...arrayOfImages] });
+        } else {
+          this.setState({ images: [...arrayOfImages] });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.setState({ loading: false });
+      }
     }
+  }
+  onSearchBarSubmit = (e, query) => {
+    e.preventDefault();
+    this.setState({ loading: true, query, page: 1 });
   };
 
-  onLodeMore = async () => {
-    await this.setState({ loading: true });
-    await this.setState(prevState => {
+  onLodeMore = () => {
+    this.setState({ loading: true });
+    this.setState(prevState => {
       return { page: prevState.page + 1 };
     });
-    try {
-      const { query, page } = this.state;
-      const response = await axios.get(`&q=${query}&page=${page}`);
-      await this.setState(prevState => {
-        return { images: [...prevState.images, ...response.data.hits] };
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.setState({ loading: false });
-    }
   };
 
   onOpenModal = imgURL => {
     this.setState({ modal: true, modalPhoto: imgURL });
-    window.addEventListener('keydown', this.onEscape);
-    window.addEventListener('click', this.onOverLayClick);
   };
 
   onCloseModal = () => {
-    const { onEscape, onOverLayClick } = this;
     this.setState({ modal: false });
-    window.removeEventListener('keydown', onEscape);
-    window.removeEventListener('keydown', onOverLayClick);
-  };
-
-  onEscape = event => {
-    if (event.key === 'Escape') {
-      this.onCloseModal();
-    }
-  };
-  onOverLayClick = event => {
-    const overlay = document.getElementById('overlay');
-    if (event.target === overlay) {
-      this.onCloseModal();
-    }
   };
 
   render() {
@@ -84,10 +74,14 @@ export class App extends Component {
     return (
       <>
         <Searchbar onSubmit={onSearchBarSubmit} />
-        <ImageGallery images={images} onOpenModal={onOpenModal} />
-        {images.length > 0 ? <Button onLodeMore={onLodeMore} /> : <></>}
-        {loading ? <Loader /> : <></>}
-        {modal ? <Modal modalPhoto={modalPhoto} /> : <></>}
+        {images.length > 0 && (
+          <ImageGallery images={images} onOpenModal={onOpenModal} />
+        )}
+        {images.length > 0 && <Button onLodeMore={onLodeMore} />}
+        {loading && <Loader />}
+        {modal && (
+          <Modal modalPhoto={modalPhoto} onCloseModal={this.onCloseModal} />
+        )}
       </>
     );
   }

@@ -1,18 +1,20 @@
-import { GallaryItem } from 'styles/styleImageGallaryItem';
 import { Image } from 'styles/styselGallaryImage';
+import PropTypes from 'prop-types';
 
-export const ImageGalleryItem = ({ images, onOpenModal }) => {
-  return images.map(image => {
-    return (
-      <GallaryItem key={image.id}>
-        <Image
-          src={image.webformatURL}
-          alt="parsed pic"
-          onClick={() => {
-            onOpenModal(image.largeImageURL);
-          }}
-        />
-      </GallaryItem>
-    );
-  });
+export const ImageGalleryItem = ({ image, onOpenModal }) => {
+  const { webformatURL, largeImageURL } = image;
+  return (
+    <Image
+      src={webformatURL}
+      alt="parsed pic"
+      onClick={() => {
+        onOpenModal(largeImageURL);
+      }}
+    />
+  );
+};
+
+ImageGalleryItem.propTypes = {
+  image: PropTypes.object,
+  onOpenModal: PropTypes.func,
 };

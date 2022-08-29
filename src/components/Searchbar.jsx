@@ -5,23 +5,47 @@ import {
   FormInput,
 } from '../styles/styleSearchbar';
 import { BiSearchAlt } from 'react-icons/bi';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 
-export const Searchbar = ({ onSubmit }) => {
-  return (
-    <SearchbarHeader>
-      <SearchbarForm onSubmit={e => onSubmit(e, e.target.elements.input.value)}>
-        <FormBtn type="submit">
-          <BiSearchAlt size={28} />
-        </FormBtn>
+export class Searchbar extends Component {
+  state = {
+    value: '',
+  };
 
-        <FormInput
-          name="input"
-          type="text"
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-        />
-      </SearchbarForm>
-    </SearchbarHeader>
-  );
+  onChange = value => {
+    this.setState({ value });
+  };
+
+  render() {
+    const { onSubmit } = this.props;
+    return (
+      <>
+        <SearchbarHeader>
+          <SearchbarForm
+            onSubmit={e => {
+              onSubmit(e, this.state.value);
+            }}
+          >
+            <FormBtn type="submit">
+              <BiSearchAlt size={28} />
+            </FormBtn>
+
+            <FormInput
+              name="input"
+              type="text"
+              autoComplete="off"
+              autoFocus
+              placeholder="Search images and photos"
+              onChange={e => this.onChange(e.target.value)}
+            />
+          </SearchbarForm>
+        </SearchbarHeader>
+      </>
+    );
+  }
+}
+
+Searchbar.propTupes = {
+  onSubmit: PropTypes.func,
 };
