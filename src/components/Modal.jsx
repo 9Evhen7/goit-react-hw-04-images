@@ -5,22 +5,22 @@ import PropTypes from 'prop-types';
 export class Modal extends Component {
   constructor(props) {
     super(props);
-    this.state = { modalPhoto: props.modalPhoto };
+    const { modalPhoto, onCloseModal } = this.props;
+    this.photo = modalPhoto;
+    this.closeModal = onCloseModal;
   }
 
-  onCloseModal = () => {
-    this.props.onCloseModal();
-  };
-
   onEscape = event => {
+    const { closeModal } = this;
     if (event.key === 'Escape') {
-      this.onCloseModal();
+      closeModal();
     }
   };
   onOverLayClick = event => {
+    const { closeModal } = this;
     const overlay = document.getElementById('overlay');
     if (event.target === overlay) {
-      this.onCloseModal();
+      closeModal();
     }
   };
 
@@ -37,10 +37,11 @@ export class Modal extends Component {
   }
 
   render() {
+    // const { modalPhoto } = this.props;
     return (
       <Overlay id="overlay">
         <Modalka>
-          <img src={this.state.modalPhoto} alt="modalPhoto" />
+          <img src={this.photo} alt="modalPhoto" />
         </Modalka>
       </Overlay>
     );
