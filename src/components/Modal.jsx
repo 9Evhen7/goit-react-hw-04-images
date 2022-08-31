@@ -3,6 +3,27 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export class Modal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { modalPhoto: props.modalPhoto };
+  }
+
+  onCloseModal = () => {
+    this.props.onCloseModal();
+  };
+
+  onEscape = event => {
+    if (event.key === 'Escape') {
+      this.onCloseModal();
+    }
+  };
+  onOverLayClick = event => {
+    const overlay = document.getElementById('overlay');
+    if (event.target === overlay) {
+      this.onCloseModal();
+    }
+  };
+
   componentDidMount() {
     const { onEscape, onOverLayClick } = this;
     window.addEventListener('keydown', onEscape);
@@ -15,26 +36,11 @@ export class Modal extends Component {
     window.removeEventListener('click', onOverLayClick);
   }
 
-  onEscape = event => {
-    const { onCloseModal } = this.props;
-    if (event.key === 'Escape') {
-      onCloseModal();
-    }
-  };
-  onOverLayClick = event => {
-    console.log('click');
-    const { onCloseModal } = this.props;
-    const overlay = document.getElementById('overlay');
-    if (event.target === overlay) {
-      onCloseModal();
-    }
-  };
   render() {
-    const { modalPhoto } = this.props;
     return (
       <Overlay id="overlay">
         <Modalka>
-          <img src={modalPhoto} alt="modalPhoto" />
+          <img src={this.state.modalPhoto} alt="modalPhoto" />
         </Modalka>
       </Overlay>
     );
