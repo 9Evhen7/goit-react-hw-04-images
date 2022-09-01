@@ -1,52 +1,37 @@
 import { Overlay, Modalka } from '../styles/stylesModal';
-import { Component } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-export class Modal extends Component {
-  constructor(props) {
-    super(props);
-    const { modalPhoto, onCloseModal } = this.props;
-    this.photo = modalPhoto;
-    this.closeModal = onCloseModal;
-  }
-
-  onEscape = event => {
-    const { closeModal } = this;
+export const Modal = ({ modalPhoto, onCloseModal }) => {
+  const onEscape = event => {
     if (event.key === 'Escape') {
-      closeModal();
+      onCloseModal();
     }
   };
-  onOverLayClick = event => {
-    const { closeModal } = this;
+  const onOverLayClick = event => {
     const overlay = document.getElementById('overlay');
     if (event.target === overlay) {
-      closeModal();
+      onCloseModal();
     }
   };
 
-  componentDidMount() {
-    const { onEscape, onOverLayClick } = this;
+  useEffect(() => {
     window.addEventListener('keydown', onEscape);
     window.addEventListener('click', onOverLayClick);
-  }
 
-  componentWillUnmount() {
-    const { onEscape, onOverLayClick } = this;
-    window.removeEventListener('keydown', onEscape);
-    window.removeEventListener('click', onOverLayClick);
-  }
-
-  render() {
-    // const { modalPhoto } = this.props;
-    return (
-      <Overlay id="overlay">
-        <Modalka>
-          <img src={this.photo} alt="modalPhoto" />
-        </Modalka>
-      </Overlay>
-    );
-  }
-}
+    return () => {
+      window.removeEventListener('keydown', onEscape);
+      window.removeEventListener('click', onOverLayClick);
+    };
+  });
+  return (
+    <Overlay id="overlay">
+      <Modalka>
+        <img src={modalPhoto} alt="modalPhoto" />
+      </Modalka>
+    </Overlay>
+  );
+};
 
 Modal.propTypes = {
   onCloseModal: PropTypes.func,
