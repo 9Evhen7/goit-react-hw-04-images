@@ -32,11 +32,7 @@ export const App = () => {
             return imgObj;
           },
         );
-        if (page !== 1) {
-          setImages(prevState => [...prevState, ...arrayOfImages]);
-        } else {
-          setImages([...arrayOfImages]);
-        }
+        setImages(prevState => [...prevState, ...arrayOfImages]);
       } catch (error) {
         console.log(error);
       } finally {
@@ -46,10 +42,11 @@ export const App = () => {
     if (query === '') {
       return;
     } else lodeImages();
-  }, [query, page]);
+  }, [page, query]);
 
   const onSearchBarSubmit = (e, query) => {
     e.preventDefault();
+    setImages([]);
     setLoding(true);
     setQuery(query);
     setPage(1);

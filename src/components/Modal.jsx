@@ -17,15 +17,13 @@ export const Modal = ({ modalPhoto, onCloseModal }) => {
 
   useEffect(() => {
     window.addEventListener('keydown', onEscape);
-    window.addEventListener('click', onOverLayClick);
 
     return () => {
       window.removeEventListener('keydown', onEscape);
-      window.removeEventListener('click', onOverLayClick);
     };
   });
   return (
-    <Overlay id="overlay">
+    <Overlay id="overlay" onClick={onOverLayClick}>
       <Modalka>
         <img src={modalPhoto} alt="modalPhoto" />
       </Modalka>
